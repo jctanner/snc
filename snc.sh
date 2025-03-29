@@ -161,6 +161,11 @@ OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=$OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRI
 # mask the chronyd service on the bootstrap node
 cat <<< $(${JQ} '.systemd.units += [{"mask": true, "name": "chronyd.service"}]' ${INSTALL_DIR}/bootstrap-in-place-for-live-iso.ign) > ${INSTALL_DIR}/bootstrap-in-place-for-live-iso.ign
 
+python -c "import json; data = json.loads(open('crc-tmp-install-data/bootstrap-in-place-for-live-iso.ign', 'r').read()); data['passwd']['users'][0]['passwordHash'] ='$(mkpasswd --method=SHA-512 core)'; open('crc-tmp-install-data/bootstrap-in-place-for-live-iso.ign', 'w').write(json.dumps(data, indent=2))"
+
+#echo "DEBUG ..."
+#exit 1
+
 # Download the image
 # https://docs.openshift.com/container-platform/latest/installing/installing_sno/install-sno-installing-sno.html#install-sno-installing-sno-manually
 # (Step retrieve the RHCOS iso url)
